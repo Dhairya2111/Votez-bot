@@ -1,1 +1,3 @@
 pyTelegramBotAPI
+discord.py
+python-dotenv
