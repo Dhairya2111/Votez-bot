@@ -1,19 +1,17 @@
-# Telegram Bot on Render
+# Discord Bot with Commands
 
-This is a production-ready Telegram bot template designed to be deployed on Render.com using Webhooks.
+A feature-rich Discord bot built with `discord.py`.
 
-## Deployment Steps on Render:
+## Setup
+1. Install dependencies: `pip install -r requirements.txt`
+2. Create a bot application on the [Discord Developer Portal](https://discord.com/developers/applications).
+3. Copy your Bot Token into the `.env` file.
+4. Ensure 'Message Content Intent' is enabled in the Developer Portal.
+5. Run the bot: `python bot.py`
 
-1. Create a new **Web Service** on Render.
-2. Connect your GitHub repository.
-3. Use the following settings:
-   - **Runtime**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn main:app`
-4. Add **Environment Variables**:
-   - `BOT_TOKEN`: Your token from @BotFather.
-   - `WEBHOOK_URL`: The URL Render gives you (e.g., `https://your-app-name.onrender.com`).
-
-## How it works:
-- The bot uses Flask to listen for incoming updates from Telegram.
-- Webhooks are more efficient than polling for cloud platforms like Render because they don't keep the CPU busy constantly.
+## Commands
+- `!ping`: Check latency.
+- `!echo <text>`: Repeat text.
+- `!userinfo <@user>`: Get user details.
+- `!clear <number>`: Bulk delete messages.
+- `!help`: Show this list.
