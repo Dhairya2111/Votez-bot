@@ -1,42 +1,43 @@
 import telebot
 import os
 import time
+import logging
 from telebot.apihelper import ApiTelegramException
 
+# Configure logging to see errors clearly
+logging.basicConfig(level=logging.INFO)
+
 # Replace 'YOUR_BOT_TOKEN' with your actual bot token from @BotFather
-# Or set it as an environment variable for security
 BOT_TOKEN = os.environ.get('BOT_TOKEN', 'YOUR_BOT_TOKEN')
 
 # Initialize the bot instance
 bot = telebot.TeleBot(BOT_TOKEN)
 
-@bot.message_handler(commands=['start']) # 1. Message detect hota hai
+@bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Hello!")      # 2. Bot reply bhejta hai
+    bot.reply_to(message, "Hello! Bot is active.")
 
-# Start the bot
 if __name__ == "__main__":
     print("Bot is starting...")
     
-    # Fix for Error 409: Conflict
-    # Remove any existing webhooks before starting polling
+    # 1. Clear any existing webhooks which often cause 409 conflicts
     try:
         bot.remove_webhook()
-        print("Webhook removed successfully.")
+        # 2. Small delay to allow Telegram servers to process the session closure
+        time.sleep(1)
+        print("Webhook removed and session cleared.")
     except Exception as e:
-        print(f"Error removing webhook: {e}")
+        print(f"Initial cleanup error: {e}")
 
-    # Using infinity_polling with error handling to manage conflicts
-    while True:
-        try:
-            print("Bot is running...")
-            bot.infinity_polling(timeout=10, long_polling_timeout=5)
-        except ApiTelegramException as e:
-            if e.error_code == 409:
-                print("Conflict detected (409). Another instance might be running. Retrying in 5 seconds...")
-                time.sleep(5)
-            else:
-                raise e
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            time.sleep(5)
+    # 3. Use infinity_polling with skip_pending=True to avoid backlog processing
+    # and built-in error handling for 409 conflicts.
+    try:
+        print("Bot is now polling...")
+        bot.infinity_polling(
+            timeout=20, 
+            long_polling_timeout=10, 
+            logger_level=logging.ERROR,
+            skip_pending=True
+        )
+    except Exception as e:
+        print(f"Critical failure: {e}")
