@@ -1,27 +1,19 @@
-# Telegram Voting Bot
+# Telegram Bot on Render
 
-A simple Telegram bot to conduct polls in channels and groups using inline buttons.
+This is a production-ready Telegram bot template designed to be deployed on Render.com using Webhooks.
 
-## Setup Instructions
+## Deployment Steps on Render:
 
-1.  **Get API Credentials:**
-    - Go to [my.telegram.org](https://my.telegram.org) and create an app to get `API_ID` and `API_HASH`.
-    - Message [@BotFather](https://t.me/BotFather) to create a bot and get the `BOT_TOKEN`.
+1. Create a new **Web Service** on Render.
+2. Connect your GitHub repository.
+3. Use the following settings:
+   - **Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `gunicorn main:app`
+4. Add **Environment Variables**:
+   - `BOT_TOKEN`: Your token from @BotFather.
+   - `WEBHOOK_URL`: The URL Render gives you (e.g., `https://your-app-name.onrender.com`).
 
-2.  **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-3.  **Configure:**
-    - Open `bot.py` and replace `API_ID`, `API_HASH`, and `BOT_TOKEN` with your actual values.
-
-4.  **Run the Bot:**
-    ```bash
-    python bot.py
-    ```
-
-## How to use
-- Add the bot to your group or channel as an admin.
-- Send: `/create_poll Question | Option 1 | Option 2`
-- Users can click buttons to vote. Clicking again removes the vote.
+## How it works:
+- The bot uses Flask to listen for incoming updates from Telegram.
+- Webhooks are more efficient than polling for cloud platforms like Render because they don't keep the CPU busy constantly.
