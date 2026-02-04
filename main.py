@@ -15,4 +15,5 @@ def send_welcome(message):
 # Start the bot
 if __name__ == "__main__":
     print("Bot is running...")
+    # Using infinity_polling to keep the bot alive
     bot.infinity_polling()
