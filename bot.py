@@ -1,36 +1,73 @@
+import discord
+from discord.ext import commands
 import os
-import telebot
-from flask import Flask
-from threading import Thread
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+
+# Define intents
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
 
 # Initialize Bot
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-bot = telebot.TeleBot(BOT_TOKEN)
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
-# Flask App for Render Port Binding
-app = Flask('')
+@bot.event
+async def on_ready():
+    print(f'Logged in as {bot.user.name} (ID: {bot.user.id})')
+    print('------')
 
-@app.route('/')
-def home():
-    return "Bot is running!"
+@bot.command(name='ping')
+async def ping(ctx):
+    """Check the bot's latency."""
+    await ctx.send(f'🏓 Pong! {round(bot.latency * 1000)}ms')
 
-def run_web():
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+@bot.command(name='echo')
+async def echo(ctx, *, message: str):
+    """Repeats what the user says."""
+    await ctx.send(message)
 
-# Bot Handlers
-@bot.message_handler(commands=['start'])
-def start(message):
-    bot.reply_to(message, "✅ Votez Bot is active and running on Render!")
+@bot.command(name='userinfo')
+async def userinfo(ctx, member: discord.Member = None):
+    """Displays information about a user."""
+    member = member or ctx.author
+    embed = discord.Embed(title=f"User Info - {member}", color=discord.Color.blue())
+    embed.set_thumbnail(url=member.display_avatar.url)
+    embed.add_field(name="ID", value=member.id, inline=True)
+    embed.add_field(name="Joined Server", value=member.joined_at.strftime("%Y-%m-%d"), inline=True)
+    embed.add_field(name="Account Created", value=member.created_at.strftime("%Y-%m-%d"), inline=True)
+    embed.add_field(name="Top Role", value=member.top_role.mention, inline=True)
+    await ctx.send(embed=embed)
 
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    bot.reply_to(message, "I am online! Send me a command.")
+@bot.command(name='clear')
+@commands.has_permissions(manage_messages=True)
+async def clear(ctx, amount: int = 5):
+    """Deletes a specified number of messages."""
+    await ctx.channel.purge(limit=amount + 1)
+    await ctx.send(f'🗑️ Deleted {amount} messages.', delete_after=3)
 
-if __name__ == "__main__":
-    # Start Web Server Thread
-    t = Thread(target=run_web)
-    t.start()
-    
-    # Start Bot Polling
-    print("Bot is starting...")
-    bot.infinity_polling()
+@bot.command(name='help')
+async def help_command(ctx):
+    """Custom help command."""
+    embed = discord.Embed(title="Bot Commands", color=discord.Color.green())
+    embed.add_field(name="!ping", value="Shows bot latency", inline=False)
+    embed.add_field(name="!echo <text>", value="Repeats your message", inline=False)
+    embed.add_field(name="!userinfo [@user]", value="Shows info about a user", inline=False)
+    embed.add_field(name="!clear <num>", value="Deletes messages (Requires Manage Messages)", inline=False)
+    await ctx.send(embed=embed)
+
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("❌ You don't have permission to use this command.")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("⚠️ Missing arguments. Check !help for usage.")
+
+if __name__ == '__main__':
+    if not TOKEN:
+        print("Error: DISCORD_TOKEN not found in environment variables.")
+    else:
+        bot.run(TOKEN)
