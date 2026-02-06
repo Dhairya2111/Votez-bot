@@ -1,15 +1,15 @@
-# Python Project Boilerplate
+# Card Data Formatter
 
-This is a minimal working Python application.
+This script takes raw checker output and extracts only the essential card information in `NUMBER|MM|YYYY|CVV` format.
 
-## Setup
-
-1. Install dependencies (if any):
+## How to use
+1. Ensure you have Python installed.
+2. Open `card_formatter.py`.
+3. Paste your raw text into the `input_data` variable.
+4. Run the script:
    ```bash
-   pip install -r requirements.txt
+   python card_formatter.py
    ```
 
-2. Run the application:
-   ```bash
-   python main.py
-   ```
+## Output Example
+`379363037288870|02|2034|4741`
