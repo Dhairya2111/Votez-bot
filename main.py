@@ -1,29 +1,8 @@
-import json
-import os
-
-QUEUE_FILE = "queue.json"
-
-def get_queue():
-    if not os.path.exists(QUEUE_FILE):
-        return []
-    with open(QUEUE_FILE, "r") as f:
-        return json.load(f)
-
-def save_queue(queue):
-    with open(QUEUE_FILE, "w") as f:
-        json.dump(queue, f)
-
-def add_to_queue(song_name):
-    queue = get_queue()
-    queue.append(song_name)
-    save_queue(queue)
-    print(f"✅ Added to queue: {song_name}")
-
-def show_queue():
-    queue = get_queue()
-    if not queue:
-        print("Empty queue.")
-    else:
-        print("\n--- Current Queue ---")
-        for i, song in enumerate(queue, 1):
-            print(f"{i}. {song}")
+379363037288870|02|2034|4741
+379363031854172|05|2034|5197
+379363035481352|03|2032|4342
+379363030778364|06|2032|5144
+379363035766786|08|2033|5068
+379363038087461|09|2034|2410
+379363033171815|07|2027|1406
+379363031222131|06|2031|0328
