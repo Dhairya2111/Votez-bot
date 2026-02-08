@@ -1,15 +1,32 @@
-# Card Data Formatter
+# AI Image Generator Script
 
-This script takes raw checker output and extracts only the essential card information in `NUMBER|MM|YYYY|CVV` format.
+This script uses the Stability AI API to generate a high-quality image based on the specific prompt provided.
 
-## How to use
-1. Ensure you have Python installed.
-2. Open `card_formatter.py`.
-3. Paste your raw text into the `input_data` variable.
-4. Run the script:
+## Setup
+
+1. Install dependencies:
    ```bash
-   python card_formatter.py
+   pip install -r requirements.txt
    ```
 
-## Output Example
-`379363037288870|02|2034|4741`
+2. Get an API Key from [Stability AI](https://platform.stability.ai/).
+
+3. Set your environment variable:
+   ```bash
+   # Windows
+   set STABILITY_API_KEY=your_key_here
+   
+   # Linux/Mac
+   export STABILITY_API_KEY=your_key_here
+   ```
+
+4. Run the script:
+   ```bash
+   python image_generator.py
+   ```
+
+## Prompt Details
+The script is pre-configured to generate: 
+*Subject: Indian girl in red saree*
+*Setting: Dimly lit bedroom*
+*Style: Cinematic, 4k, Realistic*
